@@ -3,65 +3,54 @@ import { property, customElement } from 'lit/decorators.js';
 
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
-import '@shoelace-style/shoelace/dist/components/input/input.js';
-import '@shoelace-style/shoelace/dist/components/icon/icon.js';
-import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
-
-import axios from 'axios';
 
 import { styles } from '../styles/shared-styles';
-interface Place {
+interface Space {
   id: number;
   name: string;
   description: string;
   imageUrl: string;
+  convidados: Usuario[];
 }
 
-@customElement('app-home')
-export class AppHome extends LitElement {
+interface Usuario {
+  email: string;
+  nome: string;
+  doc: string;
+}
+
+@customElement('app-espaco')
+export class AppEspaco extends LitElement {
 
   // For more information on using properties and state in lit
   // check out this link https://lit.dev/docs/components/properties/
   @property() message = 'Welcome!';
-  @property({ type: String })
-  search: string = '';
+
   @property({ type: Array })
-  places: Place[] = [{
+  space: Space = {
     id: 1,
     name: 'Meeting Room',
     description: 'A private room for meetings and presentations',
     imageUrl: 'https://picsum.photos/id/1/300/200',
-  },
-  {
-    id: 2,
-    name: 'Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
-  },
-  {
-    id: 1,
-    name: 'Meeting Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
-  },
-  {
-    id: 2,
-    name: 'Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
-  },
-  {
-    id: 1,
-    name: 'Meeting Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
-  },
-  {
-    id: 2,
-    name: 'Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
-  }];
+    convidados: [{
+      email: 'guga@gmail.com',
+      nome: 'Gustavo',
+      doc: '123456',
+
+    },
+    {
+      email: 'arthur@gmail.com',
+      nome: 'Arthur',
+      doc: '123457',
+
+    },
+    {
+      email: 'hemily@gmail.com',
+      nome: 'Hemilly',
+      doc: '123458',
+
+    }]
+  };
 
   static get styles() {
     return [
@@ -79,11 +68,11 @@ export class AppHome extends LitElement {
         margin-bottom: 70px;
       }
       .space-card {
-        width: 300px;
         background-color: #fff;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         border-radius: 4px;
         overflow: hidden;
+        paddin-bottom:10px;
       }
       .space-image {
         width: 100%;
@@ -92,6 +81,10 @@ export class AppHome extends LitElement {
       }
       .space-details {
         padding: 20px;
+      }
+      .convidado {
+        padding: 20px;
+        display: flex;
       }
       h2 {
         margin-top: 0;
@@ -112,18 +105,12 @@ export class AppHome extends LitElement {
         border-radius: 4px;
         cursor: pointer;
       }
-      .pesquisa {
-        display: flex;
-        justify-content: center;
+      .addConvidado{
+        margin-top: 20px;
       }
-      .button {
-        width: 20%;
-        float: right;
-    }
-
-      .input sl-input {
-        width: 80%;
-        float: left;
+      .delConvidado{
+        width: 50px;
+        right:0;
       }
     `];
   }
@@ -136,15 +123,6 @@ export class AppHome extends LitElement {
     // this method is a lifecycle even in lit
     // for more info check out the lit docs https://lit.dev/docs/components/lifecycle/
     console.log('This is your home page');
-    axios.post(`http://localhost:8080/v1/protected/places`)
-      .then(async (response) => {
-        this.places.push(response.data)
-      });
-  }
-
-  private _handleSearchInput(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.search = target.value;
   }
 
 
@@ -156,29 +134,33 @@ export class AppHome extends LitElement {
       <div class="titulo">
       <h1>Espaços para reservas</h1>
       </div>
-      <form class="pesquisa">
-        <div class="input">
-        <sl-input placeholder="Pesquisa" @input=${this._handleSearchInput}></sl-input>
-        <sl-button class="button" @click=${() => this._searchPlace()} variant="success">Buscar</sl-button>
-        </div>
-
-      </form>
       <div class="container">
 
 
-        ${this.places.map(
-      place => html`
 
             <div class="space-card">
-              <img class="space-image" src=${place.imageUrl} alt=${place.name} />
+              <img class="space-image" src=${this.space.imageUrl} alt=${this.space.name} />
               <div class="space-details">
-                <h2>${place.name}</h2>
-                <p>${place.description}</p>
-                <sl-button @click=${() => this._handleReserve(place.id)} variant="success">Reserve</sl-button>
+                <h2>${this.space.name}</h2>
+                <p>${this.space.description}</p>
+                ${this.space.convidados.map(
+      convidado => html`
+                    <div class="space-card">
+                        <div class="convidado">
+                        <div class="idConvidado">
+                        <h2>${convidado.nome}</h2>
+                        <p>Doc: ${convidado.doc}</p>
+                        </div>
+                        <sl-button class="delConvidado" @click=${() => this._excluirConvidado(convidado.doc)} variant="danger">Excluir</sl-button>
+                      </div>
+                    </div>
+                  `
+    )}
+
+                <sl-button class="addConvidado" @click=${() => this._handleReserve(this.space.id)} variant="primary">Adicionar convidado</sl-button>
               </div>
             </div>
-          `
-    )}
+
 
       </div>
 
@@ -188,13 +170,32 @@ export class AppHome extends LitElement {
       <app-menu></app-menu>
     ` ;
   }
-  private _searchPlace() {
-    this.places.filter((place) => place.name == this.search)
+  private _excluirConvidado(doc: string) {
+    this.space.convidados = this.space.convidados.filter(function (el: any) {
+      return el.doc != doc;
+    });
+    this.render
+    console.log("Convidado: " + doc + " foi excluido!");
+    console.log(this.space.convidados);
+
+  }
+
+  private _incluirConvidado(email: string, nome: string, doc: string) {
+    let user = {
+      "email": email,
+      "nome": nome,
+      "doc": doc
+    }
+    this.space.convidados.push(user);
+    this.render
+    console.log("Convidado: " + user + " foi inluido!");
+    console.log(this.space.convidados);
+    this.createRenderRoot();
+
   }
 
   private _handleReserve(spaceId: number) {
     // Handle reservation for the space with the given ID
-    window.location.href = "espaco"
     console.log("Reservar o espaço: " + spaceId)
   }
 }

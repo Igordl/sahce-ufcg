@@ -1,8 +1,8 @@
 {
-  "name": "pwa-starter",
+  "name": "sahce_ufcg",
   "version": "0.0.1",
-  "description": "A starter kit for building PWAs!",
-  "main": "index.js",
+  "description": "Aplicativo para reserva de horários no complexo",
+  "main": "web.js",
   "scripts": {
     "dev-server": "vite --open",
     "dev": "npm run dev-server",
@@ -12,12 +12,13 @@
     "start": "npm run dev",
     "start-remote": "vite --host"
   },
-  "author": "",
+  "author": "igordl",
   "license": "ISC",
   "dependencies": {
     "@shoelace-style/shoelace": "^2.0.0-beta.82",
     "@thepassle/app-tools": "^0.9.0",
     "@vaadin/router": "^1.7.4",
+    "axios": "^1.3.6",
     "lit": "^2.3.1",
     "urlpattern-polyfill": "^6.0.2",
     "workbox-build": "^6.5.2",
@@ -38,5 +39,9 @@
     "trailingComma": "es5",
     "endOfLine": "crlf",
     "bracketSpacing": true
-  }
+  },
+  "keywords": [
+    "SAHCE",
+    "UFCG"
+  ]
 }

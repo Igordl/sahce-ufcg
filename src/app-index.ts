@@ -1,8 +1,13 @@
 import { LitElement, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
-import './pages/app-home';
+import './pages/app-login';
+import './pages/app-cadastro';
+import './pages/app-reset-senha';
+import './pages/app-espaco';
+import './pages/app-reservas';
 import './components/header';
+import './components/menu';
 import './styles/global.css';
 import { router } from './router';
 
@@ -10,11 +15,7 @@ import { router } from './router';
 export class AppIndex extends LitElement {
   static get styles() {
     return css`
-      main {
-        padding-left: 16px;
-        padding-right: 16px;
-        padding-bottom: 16px;
-      }
+
     `;
   }
 

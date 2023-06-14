@@ -3,30 +3,25 @@ import { property, customElement } from 'lit/decorators.js';
 
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
-import '@shoelace-style/shoelace/dist/components/input/input.js';
-import '@shoelace-style/shoelace/dist/components/icon/icon.js';
-import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
-
-import axios from 'axios';
 
 import { styles } from '../styles/shared-styles';
-interface Place {
+
+interface Space {
   id: number;
   name: string;
   description: string;
   imageUrl: string;
 }
 
-@customElement('app-home')
-export class AppHome extends LitElement {
+@customElement('app-reservas')
+export class AppReservas extends LitElement {
 
   // For more information on using properties and state in lit
   // check out this link https://lit.dev/docs/components/properties/
   @property() message = 'Welcome!';
-  @property({ type: String })
-  search: string = '';
+
   @property({ type: Array })
-  places: Place[] = [{
+  spaces: Space[] = [{
     id: 1,
     name: 'Meeting Room',
     description: 'A private room for meetings and presentations',
@@ -101,29 +96,13 @@ export class AppHome extends LitElement {
         margin-top: 0;
         margin-bottom: 10px;
       }
-      .price {
-        font-size: 24px;
-        font-weight: bold;
-      }
       sl-button {
         display: block;
         width: 100%;
+        padding: 10px;
         border: none;
         border-radius: 4px;
         cursor: pointer;
-      }
-      .pesquisa {
-        display: flex;
-        justify-content: center;
-      }
-      .button {
-        width: 20%;
-        float: right;
-    }
-
-      .input sl-input {
-        width: 80%;
-        float: left;
       }
     `];
   }
@@ -136,64 +115,57 @@ export class AppHome extends LitElement {
     // this method is a lifecycle even in lit
     // for more info check out the lit docs https://lit.dev/docs/components/lifecycle/
     console.log('This is your home page');
-    axios.post(`http://localhost:8080/v1/protected/places`)
-      .then(async (response) => {
-        this.places.push(response.data)
+  }
+
+
+
+  share() {
+    if ((navigator as any).share) {
+      (navigator as any).share({
+        title: 'PWABuilder pwa-starter',
+        text: 'Check out the PWABuilder pwa-starter!',
+        url: 'https://github.com/pwa-builder/pwa-starter',
       });
+    }
   }
-
-  private _handleSearchInput(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.search = target.value;
-  }
-
 
   render() {
     return html`
       <main>
 
       <body>
+
+
       <div class="titulo">
-      <h1>Espaços para reservas</h1>
+      <h1>Minhas reservas</h1>
       </div>
-      <form class="pesquisa">
-        <div class="input">
-        <sl-input placeholder="Pesquisa" @input=${this._handleSearchInput}></sl-input>
-        <sl-button class="button" @click=${() => this._searchPlace()} variant="success">Buscar</sl-button>
-        </div>
-
-      </form>
       <div class="container">
-
-
-        ${this.places.map(
-      place => html`
+        ${this.spaces.map(
+      space => html`
 
             <div class="space-card">
-              <img class="space-image" src=${place.imageUrl} alt=${place.name} />
+              <img class="space-image" src=${space.imageUrl} alt=${space.name} />
               <div class="space-details">
-                <h2>${place.name}</h2>
-                <p>${place.description}</p>
-                <sl-button @click=${() => this._handleReserve(place.id)} variant="success">Reserve</sl-button>
+                <h2>${space.name}</h2>
+                <p>${space.description}</p>
+                <sl-button @click=${() => this._handleReserve(space.id)} variant="primary">Alterar</sl-button>
+                <sl-button @click=${() => this._cancelaReserva(space.id)} variant="danger">Cancelar</sl-button>
               </div>
             </div>
           `
     )}
-
       </div>
-
       </body>
 
       </main>
       <app-menu></app-menu>
-    ` ;
+    `;
   }
-  private _searchPlace() {
-    this.places.filter((place) => place.name == this.search)
+  private _cancelaReserva(id: number) {
+    console.log("Cancelar o espaço: " + id)
   }
 
   private _handleReserve(spaceId: number) {
-    // Handle reservation for the space with the given ID
     window.location.href = "espaco"
     console.log("Reservar o espaço: " + spaceId)
   }

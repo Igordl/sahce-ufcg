@@ -3,7 +3,7 @@
   "scope": "/",
   "name": "PWA Starter",
   "display": "standalone",
-  "start_url": "/",
+  "start_url": "/login",
   "short_name": "starter",
   "theme_color": "#E1477E",
   "description": "This is a PWA Starter app",
@@ -11,7 +11,9 @@
   "background_color": "#E1477E",
   "related_applications": [],
   "prefer_related_applications": false,
-  "display_override": ["window-controls-overlay"],
+  "display_override": [
+    "window-controls-overlay"
+  ],
   "icons": [
     {
       "src": "assets/icons/512x512.png",
@@ -55,7 +57,12 @@
       "short_name": "About",
       "description": "Open the about page",
       "url": "/about",
-      "icons": [{ "src": "assets/icons/192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "assets/icons/192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }
