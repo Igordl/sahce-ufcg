@@ -1,0 +1,8 @@
+<sl-input
+                type="date"
+                id="dtNasc"
+                name="dtNasc"
+                placeholder="Data nascimento"
+                @input=${this._handleDtNascInput}
+                required
+                ></sl-input>

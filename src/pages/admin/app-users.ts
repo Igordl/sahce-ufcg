@@ -9,16 +9,15 @@ import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 
 import axios from 'axios';
 
-import { styles } from '../styles/shared-styles';
-interface Place {
-  id: number;
+import { styles } from '../../styles/shared-styles';
+interface User {
+  email: string;
   name: string;
-  description: string;
-  imageUrl: string;
+  actived: boolean;
 }
 
-@customElement('app-home')
-export class AppHome extends LitElement {
+@customElement('app-users')
+export class AppUsers extends LitElement {
 
   // For more information on using properties and state in lit
   // check out this link https://lit.dev/docs/components/properties/
@@ -26,41 +25,25 @@ export class AppHome extends LitElement {
   @property({ type: String })
   search: string = '';
   @property({ type: Array })
-  places: Place[] = [{
-    id: 1,
-    name: 'Meeting Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
+  users: User[] = [{
+    email: 'Biel@gmail.com',
+    name: 'Bobsleu',
+    actived: true
+
+  }, {
+    email: 'guga@gmail.com',
+    name: 'Gustavo',
+    actived: true
   },
   {
-    id: 2,
-    name: 'Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
+    email: 'arthur@gmail.com',
+    name: 'Arthur',
+    actived: false
   },
   {
-    id: 3,
-    name: 'Meeting Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
-  },
-  {
-    id: 4,
-    name: 'Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
-  },
-  {
-    id: 5,
-    name: 'Meeting Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
-  },
-  {
-    id: 6,
-    name: 'Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
+    email: 'hemily@gmail.com',
+    name: 'Hemilly',
+    actived: false
   }];
 
   static get styles() {
@@ -138,7 +121,7 @@ export class AppHome extends LitElement {
     console.log('This is your home page');
     axios.post(`http://localhost:8080/v1/protected/places`)
       .then(async (response) => {
-        this.places.push(response.data)
+        this.users.push(response.data)
       });
   }
 
@@ -154,27 +137,29 @@ export class AppHome extends LitElement {
 
       <body>
       <div class="titulo">
-      <h1>Espaços para reservas</h1>
+      <h1>Usuários</h1>
       </div>
       <form class="pesquisa">
         <div class="input">
         <sl-input placeholder="Pesquisa" @input=${this._handleSearchInput}></sl-input>
-        <sl-button class="button" @click=${() => this._searchPlace()} variant="success">Buscar</sl-button>
+        <sl-button class="button" @click=${() => this._searchUser()} variant="primary">Buscar</sl-button>
         </div>
 
       </form>
       <div class="container">
 
 
-        ${this.places.map(
-      place => html`
+        ${this.users.map(
+      user => html`
 
             <div class="space-card">
-              <img class="space-image" src=${place.imageUrl} alt=${place.name} />
+
               <div class="space-details">
-                <h2>${place.name}</h2>
-                <p>${place.description}</p>
-                <sl-button @click=${() => this._handleReserve(place.id)} variant="success">Reserve</sl-button>
+                <h2>${user.name}</h2>
+                <p>${user.email}</p>
+                <sl-button @click=${() => this._handleActive(user.email)} variant="success" ?disabled=${user.actived}>Ativar</sl-button>
+                <sl-button @click=${() => this._handleInactive(user.email)} variant="danger" ?disabled=${!user.actived}>Bloquear</sl-button>
+                <sl-button @click=${() => this._handleUpdateAccount(user.email)} variant="warning" >Tornar administrador</sl-button>
               </div>
             </div>
           `
@@ -185,16 +170,42 @@ export class AppHome extends LitElement {
       </body>
 
       </main>
-      <app-menu></app-menu>
+      <app-menu-admin></app-menu-admin>
     ` ;
   }
-  private _searchPlace() {
-    this.places.filter((place) => place.name == this.search)
+  private _searchUser() {
+    this.users = this.users.filter((user) => user.name == this.search)
   }
 
-  private _handleReserve(spaceId: number) {
-    // Handle reservation for the space with the given ID
-    window.location.href = "espaco"
-    console.log("Reservar o espaço: " + spaceId)
+  private _handleActive(email: string) {
+    this.users.map(function (el: any) {
+      if (el.email == email) {
+        return el.actived = true;
+      }
+      return;
+    });
+    this.requestUpdate();
+
+  }
+
+  private _handleInactive(email: string) {
+    this.users.map(function (el: any) {
+      if (el.email == email) {
+        return el.actived = false;
+      }
+      return;
+    });
+    this.requestUpdate();
+
+  }
+  private _handleUpdateAccount(email: string) {
+    this.users.map(function (el: any) {
+      if (el.email == email) {
+        return el.actived = false;
+      }
+      return;
+    });
+    this.requestUpdate();
+
   }
 }

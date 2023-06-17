@@ -18,6 +18,11 @@ import './pages/app-reset-senha.js';
 import './pages/app-espaco.js';
 import './pages/app-reservas.js';
 
+import './pages/admin/app-home-admin.js';
+import './pages/admin/app-espaco-admin.js';
+import './pages/admin/app-reservas-admin.js';
+import './pages/admin/app-users.js';
+
 export const router = new Router({
   routes: [
     {
@@ -41,6 +46,11 @@ export const router = new Router({
       render: () => html`<app-home></app-home>`
     },
     {
+      path: '/users-admin',
+      title: 'Users',
+      render: () => html`<app-users></app-users>`
+    },
+    {
       path: '/espaco',
       title: 'Reserva de espaços',
       render: () => html`<app-espaco></app-espaco>`
@@ -49,6 +59,21 @@ export const router = new Router({
       path: '/reservas',
       title: 'Reservas de espaços',
       render: () => html`<app-reservas></app-reservas>`
+    },
+    {
+      path: '/home-admin',
+      title: 'Home',
+      render: () => html`<app-home-admin></app-home-admin>`
+    },
+    {
+      path: '/espaco-admin',
+      title: 'Reserva de espaços',
+      render: () => html`<app-espaco-admin></app-espaco-admin>`
+    },
+    {
+      path: '/reservas-admin',
+      title: 'Reservas de espaços',
+      render: () => html`<app-reservas-admin></app-reservas-admin>`
     },
   ]
 });

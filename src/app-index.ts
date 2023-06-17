@@ -6,8 +6,12 @@ import './pages/app-cadastro';
 import './pages/app-reset-senha';
 import './pages/app-espaco';
 import './pages/app-reservas';
+import './pages/admin/app-users';
 import './components/header';
 import './components/menu';
+import './components/menu-admin';
+import './pages/admin/app-espaco-admin';
+import './pages/admin/app-reservas-admin';
 import './styles/global.css';
 import { router } from './router';
 

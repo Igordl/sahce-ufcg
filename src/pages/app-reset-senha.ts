@@ -131,16 +131,32 @@ export class AppResetSenha extends LitElement {
         }
     }
 
-    _requestResetPassword() {
+    private _requestResetPassword() {
         console.log("Enviando email!")
-        axios.post(`http://localhost:8080/v1/anonymous/requestResetPassword`,
-            {
-                "email": this.username
-            })
+        let user = {
+            "email": this.username
+        }
+        axios.post(`http://localhost:8080/user/request-reset`, user)
             .then(async () => {
                 console.log("Response deu certo")
                 this.alertElementSuccess?.setAttribute("open", "open");
             }).catch(async () => {
+                console.log("Erro!")
+                this.alertElementErro?.setAttribute("open", "open");
+            });
+    }
+
+    private _resetPassword() {
+        console.log("Enviando email!")
+        let user = {
+            "email": this.username,
+            "password": this.password
+        }
+        axios.post(`http://localhost:8080/user/reset-password`, user)
+            .then(() => {
+                console.log("Response deu certo")
+                this.alertElementSuccess?.setAttribute("open", "open");
+            }).catch(() => {
                 console.log("Erro!")
                 this.alertElementErro?.setAttribute("open", "open");
             });
@@ -157,7 +173,7 @@ export class AppResetSenha extends LitElement {
                 <div class="container">
                     <div class="login-form">
                     <sl-button id="login" href="${(import.meta as any).env.BASE_URL}login/" variant="text">
-                    < Login
+                     Login
                 </sl-button>
                         <h1>Reset de senha</h1>
                                 <form>
@@ -193,7 +209,7 @@ export class AppResetSenha extends LitElement {
                                 @input=${this._handlePasswordConfInput}
                                 required
                                 ></sl-input>
-                                <sl-button type="submit" ?disabled=${!this._isFormValid()} variant="primary">
+                                <sl-button type="submit" @click=${this._resetPassword()} ?disabled=${!this._isFormValid()} variant="primary">
                                 Resetar senha
                                 </sl-button>
 

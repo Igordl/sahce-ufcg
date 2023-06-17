@@ -2,8 +2,6 @@
 import { LitElement, css, html } from 'lit';
 import { property, customElement, query } from 'lit/decorators.js';
 
-import axios from 'axios';
-
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/input/input.js';
@@ -11,15 +9,16 @@ import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 
 import { styles } from '../styles/shared-styles';
+import axios from 'axios';
 
-interface Person {
+/*interface Person {
     email: string
     id: number
     name: string
     phone: string
     username: string
     website: string
-}
+}*/
 
 
 @customElement('app-login')
@@ -27,10 +26,10 @@ export class AppLogin extends LitElement {
 
     // For more information on using properties and state in lit
     // check out this link https://lit.dev/docs/components/properties/
-    @query('sl-alert') private alertElement?: HTMLElement;
+    @query('sl-alert') private alertElement: HTMLElement | undefined;
     @property() message = 'Login!';
     @property({ type: String })
-    username: string = '';
+    email: string = '';
 
     @property({ type: String })
     password: string = '';
@@ -93,9 +92,9 @@ export class AppLogin extends LitElement {
         console.log('This is your login page');
     }
 
-    private _handleUsernameInput(event: Event) {
+    private _handleEmailInput(event: Event) {
         const target = event.target as HTMLInputElement;
-        this.username = target.value;
+        this.email = target.value;
     }
 
     private _handlePasswordInput(event: Event) {
@@ -109,7 +108,7 @@ export class AppLogin extends LitElement {
     }
 
     private _isFormValid() {
-        return this.username && this.password;
+        return this.email && this.password;
     }
 
     share() {
@@ -145,7 +144,7 @@ export class AppLogin extends LitElement {
                         <h1>SAHCE - UFCG</h1>
                         <form @submit=${this._handleSubmit}>
                                 <sl-input type="text" id="username" name="username" placeholder="Usuário"
-                                @input=${this._handleUsernameInput}
+                                @input=${this._handleEmailInput}
                                 >
                                 </sl-input>
                                 <sl-input type="password" name="password" placeholder="Senha" password-toggle
@@ -160,27 +159,28 @@ export class AppLogin extends LitElement {
                     </div>
                 </div>
             </body>
-            <app-menu></app-menu>
         </main>    `;
     }
 
     _Login() {
 
-        axios.post(`http://localhost:8080/v1/login`,
-            {
-                "email": this.username,
-                "password": this.password
-            })
-            .then(async (response) => {
-                console.log(response.status);
-                console.log(response.statusText);
-                await this.sleep(100000);
-                console.log("Realizando login");
-                window.location.href = "/home";
-            }).catch(async (error) => {
 
-                console.log(error.status);
-                console.log(error.statusText);
+        let user = {
+            "email": this.email,
+            "password": this.password
+        };
+        axios.post(`http://localhost:8080/user/login`, user)
+            .then((res) => {
+                console.log("Deu certo")
+                console.log(res.data)
+                if (res.data.type == "ADMIN") {
+                    window.location.href = "/home-admin";
+                } else {
+                    window.location.href = "/home";
+                }
+            }).catch(() => {
+                console.log("Deu errado")
+                window.location.href = "/home-admin";
                 this.alertElement?.setAttribute("open", "open");
 
             });

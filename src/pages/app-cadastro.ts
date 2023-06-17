@@ -9,18 +9,18 @@ import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/radio/radio.js';
 import '@shoelace-style/shoelace/dist/components/radio-group/radio-group.js';
-
+import '@shoelace-style/shoelace/dist/components/radio-button/radio-button.js';
 import axios from 'axios';
 
 import { styles } from '../styles/shared-styles';
-interface User {
+/*interface User {
     name: string;
     password: string;
     address: string;
     email: string;
     phone: string;
     userType: string;
-}
+}*/
 
 @customElement('app-cadastro')
 export class AppCadastro extends LitElement {
@@ -33,16 +33,13 @@ export class AppCadastro extends LitElement {
     email: string = '';
 
     @property({ type: String })
-    telefone: string = '';
+    phone: string = '';
 
     @property({ type: String })
     doc: string = '';
 
     @property({ type: String })
-    address: string = '';
-
-    @property({ type: String })
-    userType: string = '2';
+    userType: string = '';
 
     @property({ type: Object })
     docFile: string = '';
@@ -78,15 +75,11 @@ export class AppCadastro extends LitElement {
               sl-input[type='email'],
               sl-input[type='date'],
               sl-input[type='file'],
-              sl-input[type='password'] {
+              sl-input[type='password'],
+              sl-radio-group {
                 width: 100%;
                 padding: 10px;
                 margin-bottom: 20px;
-                justify-content: center;
-              }
-              sl-radio-group{
-                display: flex;
-                flex-wrap: wrap;
                 justify-content: center;
               }
               sl-button {
@@ -151,17 +144,10 @@ export class AppCadastro extends LitElement {
                 id="telefone"
                 name="telefone"
                 placeholder="Celular"
-                @input=${this._handleTelefoneInput}
+                @input=${this._handlePhoneInput}
                 required
                 ></sl-input>
-                <sl-input
-                type="text"
-                id="endereco"
-                name="endereco"
-                placeholder="Endereço"
-                @input=${this._handleEnderecoInput}
-                required
-                ></sl-input>
+
                 <sl-input
                 type="text"
                 id="doc"
@@ -170,9 +156,10 @@ export class AppCadastro extends LitElement {
                 @input=${this._handleDocInput}
                 required
                 ></sl-input>
-                <sl-radio-group label="Comunidade" name="comunidade" value=${this._handleComunidadeInput}>
-                    <sl-radio value="1" ${this._handleComunidadeInput}>Interna</sl-radio>
-                    <sl-radio value="2" ${this._handleComunidadeInput}>Externa</sl-radio>
+
+                <sl-radio-group  name="a" value=${this._handleComunidadeInput}>
+                    <sl-radio-button value="INTERNAL_USER">Aluno(a)</sl-radio-button>
+                    <sl-radio-button value="EXTERNAL_USER">Comunidade</sl-radio-button>
                 </sl-radio-group>
                 <sl-input
                 type="file"
@@ -219,9 +206,9 @@ export class AppCadastro extends LitElement {
         this.email = target.value;
     }
 
-    private _handleTelefoneInput(event: Event) {
+    private _handlePhoneInput(event: Event) {
         const target = event.target as HTMLInputElement;
-        this.telefone = target.value;
+        this.phone = target.value;
     }
 
 
@@ -231,10 +218,7 @@ export class AppCadastro extends LitElement {
         this.doc = target.value;
     }
 
-    private _handleEnderecoInput(event: Event) {
-        const target = event.target as HTMLInputElement;
-        this.address = target.value;
-    }
+
 
     private _handleDocFileInput(event: Event) {
         const target = event.target as HTMLInputElement;
@@ -267,28 +251,20 @@ export class AppCadastro extends LitElement {
 
     private _cadastro() {
 
-        axios.post(`http://localhost:8080/v1/anonymous/users`, {
+        axios.post(`http://localhost:8080/user`, {
             name: this.name,
             password: this.password,
-            address: this.address,
             email: this.email,
-            phone: this.telefone,
-            userType: "2"
+            phone: this.phone,
+            userType: this.userType
         }).then(() => {
             console.log("Cadastro solicitado");
             window.location.href = "/login";
-        }).catch(async () => {
+        }).catch(() => {
             this.alertElement?.setAttribute("open", "open");
         });
 
-        axios.post(`http://localhost:8080/v1/anonymous/users/documentPicture`, {
-            //this.docFile;
-        }).then(() => {
-            console.log("Cadastro solicitado");
-            window.location.href = "/login";
-        }).catch(async () => {
-            this.alertElement?.setAttribute("open", "open");
-        });
+
 
     }
 

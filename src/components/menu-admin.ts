@@ -4,11 +4,12 @@ import { property, customElement } from 'lit/decorators.js';
 
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 
-@customElement('app-menu')
+@customElement('app-menu-admin')
 export class AppMenu extends LitElement {
     @property({ type: String }) title = 'MENUUUU';
     @property() reservas: boolean = true;
     @property() home: boolean = false;
+    @property() users: boolean = true;
 
 
 
@@ -55,19 +56,29 @@ export class AppMenu extends LitElement {
         console.log("Menu: " + path);
         console.log("Reserva: " + this.reservas);
         console.log("Home: " + this.home);
+        console.log("Login: " + this.users);
 
 
-        if (path === "/reservas") {
+        if (path === "/reservas-admin") {
             this.reservas = false;
             this.home = true;
+            this.users = true;
 
         }
-        else if (path === "/home") {
+        else if (path === "/home-admin") {
             this.reservas = true;
             this.home = false;
+            this.users = true;
+        }
+        else if (path === "/users-admin") {
+            this.reservas = true;
+            this.home = true;
+            this.users = false;
+
         } else {
             this.reservas = true;
             this.home = true;
+            this.users = true;
         }
 
 
@@ -83,11 +94,14 @@ export class AppMenu extends LitElement {
         return html`
       <menu>
 
-        <sl-button href="${(import.meta as any).env.BASE_URL}reservas" @click=${this._changeMenu()} ?disabled=${!this.reservas}>
+        <sl-button href="${(import.meta as any).env.BASE_URL}reservas-admin" @click=${this._changeMenu()} ?disabled=${!this.reservas}>
               Reservas
         </sl-button>
-        <sl-button  href="${(import.meta as any).env.BASE_URL}home" @click=${this._changeMenu()} ?disabled=${!this.home}>
+        <sl-button  href="${(import.meta as any).env.BASE_URL}home-admin" @click=${this._changeMenu()} ?disabled=${!this.home}>
             Home
+        </sl-button>
+        <sl-button  href="${(import.meta as any).env.BASE_URL}users-admin" @click=${this._changeMenu()} ?disabled=${!this.users}>
+            Usuarios
         </sl-button>
         <sl-button  href="${(import.meta as any).env.BASE_URL}login" @click=${this._changeMenu()}>
             Sair

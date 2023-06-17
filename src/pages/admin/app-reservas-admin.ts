@@ -1,11 +1,10 @@
 import { LitElement, css, html } from 'lit';
-import { property, customElement, query } from 'lit/decorators.js';
+import { property, customElement } from 'lit/decorators.js';
 
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 
-import { styles } from '../styles/shared-styles';
-import axios from 'axios';
+import { styles } from '../../styles/shared-styles';
 
 interface Space {
   id: number;
@@ -14,17 +13,16 @@ interface Space {
   imageUrl: string;
 }
 
-@customElement('app-reservas')
+@customElement('app-reservas-admin')
 export class AppReservas extends LitElement {
 
   // For more information on using properties and state in lit
   // check out this link https://lit.dev/docs/components/properties/
   @property() message = 'Welcome!';
-  @query('sl-alert') private alertElement: HTMLElement | undefined;
   @property({ type: String })
-  email: string = '';
+  search: string = '';
   @property({ type: Array })
-  spaces: Space[] = [/*{
+  spaces: Space[] = [{
     id: 1,
     name: 'Meeting Room',
     description: 'A private room for meetings and presentations',
@@ -37,29 +35,29 @@ export class AppReservas extends LitElement {
     imageUrl: 'https://picsum.photos/id/1/300/200',
   },
   {
-    id: 1,
+    id: 3,
     name: 'Meeting Room',
     description: 'A private room for meetings and presentations',
     imageUrl: 'https://picsum.photos/id/1/300/200',
   },
   {
-    id: 2,
+    id: 4,
     name: 'Room',
     description: 'A private room for meetings and presentations',
     imageUrl: 'https://picsum.photos/id/1/300/200',
   },
   {
-    id: 1,
+    id: 5,
     name: 'Meeting Room',
     description: 'A private room for meetings and presentations',
     imageUrl: 'https://picsum.photos/id/1/300/200',
   },
   {
-    id: 2,
+    id: 6,
     name: 'Room',
     description: 'A private room for meetings and presentations',
     imageUrl: 'https://picsum.photos/id/1/300/200',
-  }*/];
+  }];
 
   static get styles() {
     return [
@@ -107,6 +105,20 @@ export class AppReservas extends LitElement {
         border-radius: 4px;
         cursor: pointer;
       }
+      .pesquisa {
+        display: flex;
+        justify-content: center;
+      }
+      .button {
+        margin-top: -10px;
+        width: 20%;
+        float: right;
+    }
+
+      .input sl-input {
+        width: 80%;
+        float: left;
+      }
     `];
   }
 
@@ -118,29 +130,6 @@ export class AppReservas extends LitElement {
     // this method is a lifecycle even in lit
     // for more info check out the lit docs https://lit.dev/docs/components/lifecycle/
     console.log('This is your home page');
-    axios.get(`http://localhost:8080/places/user/` + this.email)
-      .then((res) => {
-        console.log("Deu certo")
-        console.log(res.data)
-        this.spaces.push(res.data);
-
-      }).catch(() => {
-        console.log("Deu errado")
-        this.alertElement?.setAttribute("open", "open");
-
-      });
-    if (this.spaces.length == 0) {
-      let spaceFake =
-      {
-        id: 0,
-        name: 'Nenhum espaço reservado',
-        description: 'Retorne a home e faça sua reserva',
-        imageUrl: '',
-      }
-
-      this.spaces.push(spaceFake)
-    }
-    this.requestUpdate();
   }
 
 
@@ -160,23 +149,30 @@ export class AppReservas extends LitElement {
       <main>
 
       <body>
-      <sl-alert variant="danger" duration="5000" closable >Erro ao carregar reservas!</sl-alert>
 
 
       <div class="titulo">
-      <h1>Minhas reservas</h1>
+      <h1>Todas as reservas</h1>
       </div>
+      <form class="pesquisa">
+        <div class="input">
+        <sl-input placeholder="Pesquisa" @input=${this._handleSearchInput}></sl-input>
+        <sl-button class="button" @click=${() => this._searchPlace()} variant="primary">Buscar</sl-button>
+        </div>
+
+      </form>
       <div class="container">
+
         ${this.spaces.map(
       space => html`
 
             <div class="space-card">
-              <img class="space-image" src=${space.imageUrl}/>
+              <img class="space-image" src=${space.imageUrl} alt=${space.name} />
               <div class="space-details">
                 <h2>${space.name}</h2>
                 <p>${space.description}</p>
-                <sl-button @click="${() => this._handleReserve(space.id)}" variant="primary">Alterar</sl-button>
-                <sl-button @click="${() => this._cancelaReserva(space.id)}" variant="danger">Cancelar</sl-button>
+                <sl-button @click="${() => this._handleInfoSchedule(space.id)}" variant="primary">Informações de reserva</sl-button>
+                <sl-button @click="${() => this._cancelaReserva(space.id)}" variant="danger">Cancelar reserva</sl-button>
               </div>
             </div>
           `
@@ -185,15 +181,34 @@ export class AppReservas extends LitElement {
       </body>
 
       </main>
-      <app-menu></app-menu>
+      <app-menu-admin></app-menu-admin>
     `;
   }
   private _cancelaReserva(id: number) {
-    console.log("Cancelar o espaço: " + id)
+    this.spaces = this.spaces.filter(function (el: any) {
+      return el.id != id;
+    });
+    console.log("Reserva: " + id + " foi excluida!");
+    console.log(this.spaces);
+    this.requestUpdate();
+
+
   }
 
-  private _handleReserve(spaceId: number) {
+  private _handleInfoSchedule(spaceId: number) {
     window.location.href = "espaco"
     console.log("Reservar o espaço: " + spaceId)
   }
+
+  private _handleSearchInput(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.search = target.value;
+  }
+
+  private _searchPlace() {
+    console.log("Busca:" + this.search)
+    this.spaces = this.spaces.filter((place) => place.name == this.search)
+    this.requestUpdate();
+  }
+
 }
