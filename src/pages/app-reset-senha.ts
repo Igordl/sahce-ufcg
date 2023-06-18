@@ -31,12 +31,18 @@ export class AppResetSenha extends LitElement {
     @query('.alertErro') private alertElementErro?: HTMLElement;
     @query('.alertSuccess') private alertElementSuccess?: HTMLElement;
 
+    axios = axios.create({
+        baseURL: 'http://localhost:8080/v1',
+        timeout: 1000,
+        headers: { 'X-Custom-Header': 'foobar' }
+    });
+
     static get styles() {
         return [
             styles,
             css`
             .container {
-                display: flex;
+                display: block;
                 justify-content: center;
               }
               .login-form {
@@ -62,7 +68,8 @@ export class AppResetSenha extends LitElement {
                 margin-bottom: 10px;
               }
               sl-input[type='text'],
-              sl-input[type='password'] {
+              sl-input[type='password'],
+              sl-input[type='email'] {
                 width: 100%;
                 padding: 10px;
               }
@@ -136,12 +143,12 @@ export class AppResetSenha extends LitElement {
         let user = {
             "email": this.username
         }
-        axios.post(`http://localhost:8080/user/request-reset`, user)
+        this.axios.post(`/anonymous/requestResetPassword`, user)
             .then(async () => {
                 console.log("Response deu certo")
                 this.alertElementSuccess?.setAttribute("open", "open");
-            }).catch(async () => {
-                console.log("Erro!")
+            }).catch(async (error) => {
+                console.log(error);
                 this.alertElementErro?.setAttribute("open", "open");
             });
     }
@@ -152,12 +159,11 @@ export class AppResetSenha extends LitElement {
             "email": this.username,
             "password": this.password
         }
-        axios.post(`http://localhost:8080/user/reset-password`, user)
+        this.axios.post(`/anonymous/reset-password`, user)
             .then(() => {
                 console.log("Response deu certo")
                 this.alertElementSuccess?.setAttribute("open", "open");
             }).catch(() => {
-                console.log("Erro!")
                 this.alertElementErro?.setAttribute("open", "open");
             });
     }
@@ -176,11 +182,11 @@ export class AppResetSenha extends LitElement {
                      Login
                 </sl-button>
                         <h1>Reset de senha</h1>
-                                <form>
+                                <form @submit=${this._handleSubmit}>
                                 <sl-input type="email" id="email" name="email" placeholder="E-mail"
                                 @input=${this._handleUsernameInput}
                                 ></sl-input>
-                                <sl-button type="submit" ?disabled=${!this._isEmailValid()} @click=${this._requestResetPassword()} variant="primary">
+                                <sl-button type="submit" ?disabled=${!this._isEmailValid()} @click=${this._requestResetPassword} variant="primary">
                                 Enviar token
                                 </sl-button>
                                 </form>
@@ -209,7 +215,7 @@ export class AppResetSenha extends LitElement {
                                 @input=${this._handlePasswordConfInput}
                                 required
                                 ></sl-input>
-                                <sl-button type="submit" @click=${this._resetPassword()} ?disabled=${!this._isFormValid()} variant="primary">
+                                <sl-button type="submit" @click=${this._resetPassword} ?disabled=${!this._isFormValid()} variant="primary">
                                 Resetar senha
                                 </sl-button>
 

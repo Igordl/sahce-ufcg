@@ -16,6 +16,7 @@ import './pages/app-login.js';
 import './pages/app-cadastro.js';
 import './pages/app-reset-senha.js';
 import './pages/app-espaco.js';
+import './pages/app-espaco-info.js';
 import './pages/app-reservas.js';
 
 import './pages/admin/app-home-admin.js';
@@ -54,6 +55,11 @@ export const router = new Router({
       path: '/espaco',
       title: 'Reserva de espaços',
       render: () => html`<app-espaco></app-espaco>`
+    },
+    {
+      path: '/espaco-info',
+      title: 'Reserva de espaços',
+      render: () => html`<app-espaco-info></app-espaco-info>`
     },
     {
       path: '/reservas',

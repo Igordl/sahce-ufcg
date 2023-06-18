@@ -174,7 +174,7 @@ export class AppUsers extends LitElement {
     ` ;
   }
   private _searchUser() {
-    this.users = this.users.filter((user) => user.name == this.search)
+    this.users = this.users.filter((user) => user.name.toLowerCase().includes(this.search.toLowerCase()))
   }
 
   private _handleActive(email: string) {

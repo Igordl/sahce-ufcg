@@ -33,6 +33,13 @@ export class AppLogin extends LitElement {
 
     @property({ type: String })
     password: string = '';
+
+    axios = axios.create({
+        baseURL: 'http://localhost:8080/v1',
+        timeout: 1000,
+        headers: { 'X-Custom-Header': 'foobar' }
+    });
+
     static get styles() {
         return [
             styles,
@@ -169,7 +176,14 @@ export class AppLogin extends LitElement {
             "email": this.email,
             "password": this.password
         };
-        axios.post(`http://localhost:8080/user/login`, user)
+
+        if (user.email == "admin") {
+            window.location.href = "/home-admin";
+        } else {
+            window.location.href = "/home";
+        }
+        /*
+        this.axios.post(`http://localhost:8080/user/login`, user)
             .then((res) => {
                 console.log("Deu certo")
                 console.log(res.data)
@@ -184,7 +198,7 @@ export class AppLogin extends LitElement {
                 this.alertElement?.setAttribute("open", "open");
 
             });
-
+*/
 
 
 

@@ -15,6 +15,15 @@ interface Place {
   name: string;
   description: string;
   imageUrl: string;
+  restrict: boolean;
+  schedules: Schedule[]
+}
+interface Schedule {
+  day: string;
+  times: string[];
+}
+interface Time {
+  hour: string;
 }
 
 @customElement('app-home')
@@ -28,39 +37,43 @@ export class AppHome extends LitElement {
   @property({ type: Array })
   places: Place[] = [{
     id: 1,
-    name: 'Meeting Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
+    name: 'Campo de futebol',
+    description: 'Campo de futebol',
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9aUs30A6dnmvXuWgLX6mT5SFpzA6u_Mywr2aUnkpZNIJpRhm3ebRbezADap3_6rYJPQE&usqp=CAU',
+    restrict: false,
+    schedules: []
   },
   {
     id: 2,
-    name: 'Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
+    name: 'Quadra de areia',
+    description: 'Quadra de areia',
+    imageUrl: 'https://clubepaineiras.org.br/wp-content/uploads/2016/07/Esporte-volei-de-praia.jpg',
+    restrict: false,
+    schedules: []
   },
   {
     id: 3,
-    name: 'Meeting Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
+    name: 'Quadra de tênis',
+    description: 'Quadra de tênis',
+    imageUrl: 'https://s2-ge.glbimg.com/PDV4QjcST79VbbXPPRtwaQC0AWM=/0x0:1280x720/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_bc8228b6673f488aa253bbcb03c80ec5/internal_photos/bs/2021/5/j/XdI1cNTZeuEfGCjpnbOQ/whatsapp-image-2021-04-22-at-19.22.46.jpeg',
+    restrict: true,
+    schedules: []
   },
   {
     id: 4,
-    name: 'Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
+    name: 'Quadra de beach tênis',
+    description: 'Quadra de beach tênis',
+    imageUrl: 'https://static.wixstatic.com/media/b2bea2_3b82eaedea3c4fc2bb96e0120699e85e~mv2.jpeg/v1/fill/w_1000,h_750,al_c,q_85,usm_0.66_1.00_0.01/b2bea2_3b82eaedea3c4fc2bb96e0120699e85e~mv2.jpeg',
+    restrict: true,
+    schedules: []
   },
   {
     id: 5,
-    name: 'Meeting Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
-  },
-  {
-    id: 6,
-    name: 'Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
+    name: 'Quadra de areia 2',
+    description: 'Quadra de areia',
+    imageUrl: 'https://clubepaineiras.org.br/wp-content/uploads/2016/07/Esporte-volei-de-praia.jpg',
+    restrict: false,
+    schedules: []
   }];
 
   static get styles() {
@@ -189,12 +202,12 @@ export class AppHome extends LitElement {
     ` ;
   }
   private _searchPlace() {
-    this.places.filter((place) => place.name == this.search)
+    this.places = this.places.filter((place) => place.name.toLowerCase().includes(this.search.toLowerCase()))
   }
 
   private _handleReserve(spaceId: number) {
     // Handle reservation for the space with the given ID
-    window.location.href = "espaco"
+    window.location.href = "/espaco"
     console.log("Reservar o espaço: " + spaceId)
   }
 }

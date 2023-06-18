@@ -7,27 +7,23 @@ import '@shoelace-style/shoelace/dist/components/input/input.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
-import '@shoelace-style/shoelace/dist/components/switch/switch.js';
-import '@shoelace-style/shoelace/dist/components/radio/radio.js';
-import '@shoelace-style/shoelace/dist/components/radio-group/radio-group.js';
-import '@shoelace-style/shoelace/dist/components/radio-button/radio-button.js';
 import '@shoelace-style/shoelace/dist/components/select/select.js';
 import '@shoelace-style/shoelace/dist/components/option/option.js';
 
 import axios from 'axios';
 
 import { styles } from '../../styles/shared-styles';
-import SlSelect from '@shoelace-style/shoelace/dist/components/select/select.js';
 interface Place {
   id: number;
   name: string;
   description: string;
   imageUrl: string;
-  restrict: boolean
+  restrict: boolean;
+  schedules: Schedule[]
 }
 interface Schedule {
   day: string;
-  times: Time[];
+  times: string[];
 }
 interface Time {
   hour: string;
@@ -41,100 +37,69 @@ export class AppHome extends LitElement {
   // For more information on using properties and state in lit
   // check out this link https://lit.dev/docs/components/properties/
   @property() message = 'Welcome!';
-  @query('sl-alert') private alertElement?: HTMLElement;
+  @query('#inclusao')
+  private modalAddElement?: HTMLElement;
+  @query('#exclusao')
+  private modalElement?: HTMLElement;
+
+  @query('#alertAddPlace')
+  private alertElement?: HTMLElement;
+  @query('#daySelect')
+  private daySelect: any;
+  @query('#schedulesSelect')
+  private schedulesSelect: any;
+  @query('#typeUser')
+  private restrict: any;
+
+  @query('#ratingScheduling')
+  private ratingScheduling: any;
+
   @property({ type: String })
   search: string = '';
   @property({ type: Array })
-  schedules: Schedule[] = [{
-    day: "Segunda-Feira",
-    times: [
-      { hour: "08:00 - 10:00" },
-      { hour: "10:00 - 12:00" },
-      { hour: "14:00 - 16:00" },
-      { hour: "16:00 - 18:00" },
-      { hour: "20:00 - 22:00" }]
-  },
-  {
-    day: "Terça-Feira",
-    times: [
-      { hour: "08:00 - 10:00" },
-      { hour: "10:00 - 12:00" },
-      { hour: "14:00 - 16:00" },
-      { hour: "16:00 - 18:00" },
-      { hour: "20:00 - 22:00" }]
-  },
-  {
-    day: "Quarta-Feira",
-    times: [
-      { hour: "08:00 - 10:00" },
-      { hour: "10:00 - 12:00" },
-      { hour: "14:00 - 16:00" },
-      { hour: "16:00 - 18:00" },
-      { hour: "20:00 - 22:00" }]
-  },
-  {
-    day: "Quinta-Feira",
-    times: [
-      { hour: "08:00 - 10:00" },
-      { hour: "10:00 - 12:00" },
-      { hour: "14:00 - 16:00" },
-      { hour: "16:00 - 18:00" },
-      { hour: "20:00 - 22:00" }]
-  }, {
-    day: "Sexta-Feira",
-    times: [
-      { hour: "08:00 - 10:00" },
-      { hour: "10:00 - 12:00" },
-      { hour: "14:00 - 16:00" },
-      { hour: "16:00 - 18:00" },
-      { hour: "20:00 - 22:00" }]
-  }, {
-    day: "Sábado",
-    times: [
-      { hour: "08:00 - 10:00" },
-      { hour: "10:00 - 12:00" },
-      { hour: "14:00 - 16:00" },
-      { hour: "16:00 - 18:00" },
-      { hour: "20:00 - 22:00" }]
-  }]
+  schedules: Schedule[] = []
+
 
   @property({ type: Array })
   places: Place[] = [{
     id: 1,
-    name: 'Meeting Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200', restrict: true
+    name: 'Campo de futebol',
+    description: 'Campo de futebol',
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9aUs30A6dnmvXuWgLX6mT5SFpzA6u_Mywr2aUnkpZNIJpRhm3ebRbezADap3_6rYJPQE&usqp=CAU',
+    restrict: false,
+    schedules: []
   },
   {
     id: 2,
-    name: 'Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200', restrict: true
+    name: 'Quadra de areia',
+    description: 'Quadra de areia',
+    imageUrl: 'https://clubepaineiras.org.br/wp-content/uploads/2016/07/Esporte-volei-de-praia.jpg',
+    restrict: false,
+    schedules: []
   },
   {
     id: 3,
-    name: 'Meeting Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200', restrict: true
+    name: 'Quadra de tênis',
+    description: 'Quadra de tênis',
+    imageUrl: 'https://s2-ge.glbimg.com/PDV4QjcST79VbbXPPRtwaQC0AWM=/0x0:1280x720/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_bc8228b6673f488aa253bbcb03c80ec5/internal_photos/bs/2021/5/j/XdI1cNTZeuEfGCjpnbOQ/whatsapp-image-2021-04-22-at-19.22.46.jpeg',
+    restrict: true,
+    schedules: []
   },
   {
     id: 4,
-    name: 'Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200', restrict: true
+    name: 'Quadra de beach tênis',
+    description: 'Quadra de beach tênis',
+    imageUrl: 'https://static.wixstatic.com/media/b2bea2_3b82eaedea3c4fc2bb96e0120699e85e~mv2.jpeg/v1/fill/w_1000,h_750,al_c,q_85,usm_0.66_1.00_0.01/b2bea2_3b82eaedea3c4fc2bb96e0120699e85e~mv2.jpeg',
+    restrict: true,
+    schedules: []
   },
   {
     id: 5,
-    name: 'Meeting Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200', restrict: true
-  },
-  {
-    id: 6,
-    name: 'Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
-    restrict: true
+    name: 'Quadra de areia 2',
+    description: 'Quadra de areia',
+    imageUrl: 'https://clubepaineiras.org.br/wp-content/uploads/2016/07/Esporte-volei-de-praia.jpg',
+    restrict: false,
+    schedules: []
   }];
 
   @property({ type: String })
@@ -143,20 +108,14 @@ export class AppHome extends LitElement {
   @property({ type: String })
   imageUrl: string = '';
 
-  @property({ type: String })
-  restrict: string = 'false';
+
 
   @property({ type: String })
   description: string = '';
 
-  @property({ type: String })
-  day: string = '';
 
-  @property({ type: String })
-  schedule: string = '';
-
-  @property({ type: String })
-  arrayString: string[] = [];
+  @property({ type: Number })
+  placeId!: number;
 
   static get styles() {
     return [
@@ -220,7 +179,6 @@ export class AppHome extends LitElement {
         float: left;
       }
       .addPlace{
-          display: flex;
           flex-wrap: wrap;
           justify-content: center;
           gap: 20px;
@@ -229,10 +187,17 @@ export class AppHome extends LitElement {
           width: 80%;
       }
       .addForm {
-        padding: 40px;
+        justify-content: center;
+        gap: 20px;
+        padding: 20px;
         background-color: #fff;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
       }
+      .form-add{
+
+        padding: 5px;
+      }
+
     `];
   }
 
@@ -277,150 +242,166 @@ export class AppHome extends LitElement {
     return this.description;
 
   }
-  private _handleDayInput(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.day = target.value;
-    return this.day;
-
-  }
-  private _handleScheduleInput(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.schedule = target.value;
-    return this.schedule;
-
-  }
-
-
 
 
   render() {
     return html`
-      <main>
-
-      <body>
-      <sl-alert variant="success" closable >
-      <h1>Adicionar espaço</h1>
-      <form class="addForm">
-      <sl-input type="text" id="username" name="name" placeholder="Nome"
-      @input=${this._handleNameInput}
-      >
-      </sl-input>
-      <sl-input type="text" name="url" placeholder="URL da imagem"
-      @input=${this._handleUrlInput}
-      ></sl-input>
-      <sl-input type="text" name="description" placeholder="Descrição"
-      @input=${this._handleDescriptionInput}
-      ></sl-input>
-      <sl-radio-group  name="a" value="false" onSlChange=${this._handleComunidadeInput} >
-                    <sl-radio-button value="true">Restrito</sl-radio-button>
-                    <sl-radio-button value="false">Aberto a comunidade</sl-radio-button>
-                </sl-radio-group>
-      ${this.schedules.map(
+    <main>
+    <body>
+        <sl-alert id="alertAddPlace" variant="danger" duration="10000" closable >Não foi possivel criar o espaço. Tente novamente mais tarde.</sl-alert>
+       <sl-alert variant="danger" id="exclusao" variant="danger" >
+          <h2>Certeza que deseja excluir o espaço?
+          </h2>
+          <sl-button class="addConvidado" @click=${() => this._handleDeletePlace(this.placeId)}  variant="danger">Excluir</sl-button>
+          <sl-button class="addConvidado" @click=${() => this.modalAddElement?.setAttribute("duration", "0")}  variant="primary">Cancelar</sl-button>
+       </sl-alert>
+       <sl-alert id="inclusao" variant="success">
+          <h1>Adicionar espaço</h1>
+          <form class="addForm">
+             <sl-input type="text" class="form-add" id="username" name="name" placeholder="Nome"
+                @input=${this._handleNameInput}
+                >
+             </sl-input>
+             <sl-input type="text" class="form-add" name="url" placeholder="URL da imagem"
+                @input=${this._handleUrlInput}
+                ></sl-input>
+             <sl-input type="text" class="form-add" name="description" placeholder="Descrição"
+                @input=${this._handleDescriptionInput}
+                ></sl-input>
+             <sl-radio-group size='small' class="form-add" name="a" id="typeUser" value="false" onSlChange=${this._handleComunidadeInput} >
+                <sl-radio-button value="true">Restrito</sl-radio-button>
+                <sl-radio-button value="false">Aberto a comunidade</sl-radio-button>
+             </sl-radio-group>
+             ${this.schedules.map(
       schedule => html`
-        <div class="space-card">
-              <div class="space-details">
-                <h2>${schedule.day}</h2>
-                ${schedule.times.map(
+                                         <div class="space-card">
+                                            <div class="space-details">
+                                               <h2>${schedule.day}</h2>
+                                               ${schedule.times.map(
         time => html`
-                <p>${time.hour}</p>
-                `)}
-              </div>
-            </div>
-        `)}
-
-        <sl-select id="daySelect" placeholder="Selecione o dia" onSlChange={this._onSlChangeDay} value="${this.day}" clearable>
-        <sl-option value="Segunda-feira">Segunda-feira</sl-option>
-        <sl-option value="Terça-feira">Terça-feira</sl-option>
-        <sl-option value="Quarta-feira">Quarta-feira</sl-option>
-        <sl-option value="Quinta-feira">Quinta-feira</sl-option>
-        <sl-option value="Sexta-feira">Sexta-feira</sl-option>
-        <sl-option value="Sábado">Sábado</sl-option>
-        <sl-option value="Domingo">Domingo</sl-option>
-      </sl-select>
-
-        <sl-select id="schedulesSelect" placeholder="Selecione o horário" onSlChange=${console.log("cehgou")} value=${console.log("cehgou")} multiple clearable>
-          <sl-option value="06:00-08:00">06:00-08:00</sl-option>
-          <sl-option value="08:00-10:00">08:00-10:00</sl-option>
-          <sl-option value="10:00-12:00">10:00-12:00</sl-option>
-          <sl-option value="14:00-16:00">14:00-16:00</sl-option>
-          <sl-option value="16:00-18:00">16:00-18:00</sl-option>
-          <sl-option value="18:00-20:00">18:00-20:00</sl-option>
-          <sl-option value="20:00-22:00">20:00-22:00</sl-option>
-      </sl-select>
-                <sl-button class="addConvidado" @click=${() => this._handleAddTimesModal()}  variant="success">Adicionar horários</sl-button>
-
-
-                  <sl-button class="addConvidado" @click=${() => this._handleAddPlaceModal()}  variant="success">Adicionar espaço</sl-button>
-                  </form></sl-alert>
-
-      <div class="titulo">
-      <h1>Espaços para reservas</h1>
-
-      </div>
-      <form class="pesquisa">
-        <div class="input">
-        <sl-input placeholder="Pesquisa" @input=${this._handleSearchInput}></sl-input>
-        <sl-button class="button" @click=${() => this._searchPlace()} variant="primary">Buscar</sl-button>
-        </div>
-
-      </form>
-
-
-      <sl-button class="addPlace" @click=${() => this._handleAddPlace()} variant="success">Adicionar espaço</sl-button>
-
-      <div class="container">
-
-        ${this.places.map(
+                                                                    <p>${time}</p>
+                                               `)}
+                                               <sl-button @click=${() => this._handleCancelSchedule(schedule.day)} variant="danger">Cancelar</sl-button>
+                                            </div>
+                                         </div>
+             `)}
+             <sl-select id="daySelect" class="form-add" placeholder="Selecione o dia" clearable>
+                <sl-option value="Segunda-feira">Segunda-feira</sl-option>
+                <sl-option value="Terça-feira">Terça-feira</sl-option>
+                <sl-option value="Quarta-feira">Quarta-feira</sl-option>
+                <sl-option value="Quinta-feira">Quinta-feira</sl-option>
+                <sl-option value="Sexta-feira">Sexta-feira</sl-option>
+                <sl-option value="Sábado">Sábado</sl-option>
+                <sl-option value="Domingo">Domingo</sl-option>
+             </sl-select>
+             <sl-select id="schedulesSelect" class="form-add" placeholder="Selecione o horário" multiple clearable>
+                <sl-option value="06:00-08:00">06:00-08:00</sl-option>
+                <sl-option value="08:00-10:00">08:00-10:00</sl-option>
+                <sl-option value="10:00-12:00">10:00-12:00</sl-option>
+                <sl-option value="14:00-16:00">14:00-16:00</sl-option>
+                <sl-option value="16:00-18:00">16:00-18:00</sl-option>
+                <sl-option value="18:00-20:00">18:00-20:00</sl-option>
+                <sl-option value="20:00-22:00">20:00-22:00</sl-option>
+             </sl-select>
+             <sl-button class="form-add" @click=${() => this._handleAddTimesModal()}  variant="success">Adicionar horários</sl-button>
+             <sl-radio-group  class="form-add" size='small' name="a" id="ratingScheduling" value="false" >
+                <sl-radio-button value="1">1 Semana</sl-radio-button>
+                <sl-radio-button value="2">1 Mês</sl-radio-button>
+                <sl-radio-button value="3">3 Meses</sl-radio-button>
+                <sl-radio-button value="4">6 Meses</sl-radio-button>
+             </sl-radio-group>
+             <sl-button class="form-add" @click=${() => this._handleAddPlaceModal()}  variant="success">Adicionar espaço</sl-button>
+          <sl-button class="form-add" @click=${() => this._handleCancelAddPlace()} variant="danger">Cancelar</sl-button>
+       </form>
+       </sl-alert>
+       <div class="titulo">
+          <h1>Espaços para reservas</h1>
+       </div>
+       <form class="pesquisa">
+          <div class="input">
+             <sl-input placeholder="Pesquisa" @input=${this._handleSearchInput}></sl-input>
+             <sl-button class="button" @click=${() => this._searchPlace()} variant="primary">Buscar</sl-button>
+          </div>
+       </form>
+       <sl-button class="addPlace" @click=${() => this._handleAddPlace()} variant="success">Adicionar espaço</sl-button>
+       <div class="container">
+          ${this.places.map(
           place => html`
-
-            <div class="space-card">
-              <img class="space-image" src=${place.imageUrl} alt=${place.name} />
-              <div class="space-details">
+          <div class="space-card">
+             <img class="space-image" src=${place.imageUrl} alt=${place.name} />
+             <div class="space-details">
                 <h2>${place.name}</h2>
                 <p>${place.description}</p>
                 <sl-button @click=${() => this._handleCancelPlace(place.id)} variant="danger">Cancelar</sl-button>
-              </div>
-            </div>
-
+             </div>
+          </div>
           `
         )}
-     </div>
-
-      </body>
-
-      </main>
-      <app-menu-admin></app-menu-admin>
+       </div>
+    </body>
+ </main>
+ <app-menu-admin></app-menu-admin>
     ` ;
   }
 
   private _searchPlace() {
-    this.places = this.places.filter((place) => place.name == this.search)
+    this.places = this.places.filter((place) => place.name.toLowerCase().includes(this.search.toLowerCase()))
   }
 
   private _handleCancelPlace(spaceId: number) {
+    this.placeId = spaceId;
+    this.modalElement?.setAttribute("open", "open");
+    this.modalElement?.setAttribute("duration", "10000")
+
+  }
+  private _handleDeletePlace(spaceId: number) {
     this.places = this.places.filter((place) => place.id != spaceId);
+    this.modalElement?.setAttribute("duration", "0")
+    this.requestUpdate();
+
+
+  }
+
+
+  private _handleCancelSchedule(scheduleDay: string) {
+    this.schedules = this.schedules.filter((schedule) => schedule.day != scheduleDay);
     this.requestUpdate();
   }
 
-  private _handleAddPlace() {
-    this.alertElement?.setAttribute("open", "open");
 
+  private _handleAddPlace() {
+    this.modalAddElement?.setAttribute("duration", "1000000");
+    this.modalAddElement?.setAttribute("open", "open");
 
   }
+  private _handleCancelAddPlace() {
+    this.modalAddElement?.setAttribute("duration", "0");
+
+  }
+
+
   private _handleAddTimesModal() {
-    console.log(document.getElementById('#schedulesSelect').selectedOptions as HTMLBodyElement)
-    console.log(this.arrayString);
-    let time = { hour: this.schedule }
-    let schedule = {
-      day: this.day,
-      times: [
-        time
-      ]
+    var times = this.schedulesSelect.value as string[]
+    var day = this.daySelect.value as string
+    let scheduleAux = {
+      day: day,
+      times: times
     }
-    console.log(this.schedule);
-    console.log(this.day);
-    this.schedules.push(schedule);
-    this.requestUpdate
+    if (day != "" && times.length > 0) {
+      if (this.schedules.find((schedule) =>
+        schedule.day === day)) {
+        this.schedules = this.schedules.map((schedule) =>
+          schedule.day === day ? { ...schedule, times: times } : schedule
+        );
+      } else {
+        this.schedules.push(scheduleAux);
+      }
+    }
+    let daySelect = this.daySelect as HTMLElement;
+    daySelect.setAttribute("value", "");
+    let scheduleSelect = this.schedulesSelect as HTMLElement;
+    scheduleSelect.setAttribute("value", "");
+    this.requestUpdate()
 
   }
   private _handleAddPlaceModal() {
@@ -430,9 +411,13 @@ export class AppHome extends LitElement {
       name: this.name,
       description: this.description,
       imageUrl: this.imageUrl,
-      restrict: this.restrict
+      restrict: this.restrict.value as boolean,
+      schedules: this.schedules,
+      rateScheduling: this.ratingScheduling.value as string
     };
     console.log(place);
+    this.places.push(place);
+
 
     axios.post(`http://localhost:8080/place`, place)
       .then((res) => {
@@ -441,20 +426,19 @@ export class AppHome extends LitElement {
         this.requestUpdate();
       }).catch(() => {
         console.log("Deu errado")
+        this.modalAddElement?.setAttribute("duration", "0");
         this.alertElement?.setAttribute("open", "open");
 
       });
-  }
-  private _onSlChangeDay(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.day = target.value;
-    console.log("Selecionando o dia");
+
+    this.name = "";
+    this.imageUrl = "";
+    this.description = "";
+    this.schedules = [];
+    this.requestUpdate();
+
   }
 
-  private _onSlChangeSchedule(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.schedule = target.value;
-    this.arrayString.push(this.schedule);
-    console.log("adicionando horarios");
-  }
+
+
 }

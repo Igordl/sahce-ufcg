@@ -11,6 +11,10 @@ interface Space {
   id: number;
   name: string;
   description: string;
+  schedule: string;
+  day: string;
+  emailOwner: string;
+  nameOwner: string;
   imageUrl: string;
 }
 
@@ -26,39 +30,53 @@ export class AppReservas extends LitElement {
   @property({ type: Array })
   spaces: Space[] = [/*{
     id: 1,
-    name: 'Meeting Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
+    name: 'Quadra de areia',
+    description: 'Quadra de areia',
+    imageUrl: 'https://clubepaineiras.org.br/wp-content/uploads/2016/07/Esporte-volei-de-praia.jpg',
+    schedule: '18:00-20:00',
+    day: 'Segunda-Feira',
+    emailOwner: 'mariana@gmail.com',
+    nameOwner: 'Mariana Lucena',
   },
   {
     id: 2,
-    name: 'Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
+    name: 'Quadra de areia',
+    description: 'Quadra de areia',
+    imageUrl: 'https://clubepaineiras.org.br/wp-content/uploads/2016/07/Esporte-volei-de-praia.jpg',
+    schedule: '20:00-22:00',
+    day: 'Segunda-Feira',
+    emailOwner: 'igor@gmail.com',
+    nameOwner: 'Igor Lucena',
   },
   {
-    id: 1,
-    name: 'Meeting Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
+    id: 3,
+    name: 'Quadra de tênis',
+    description: 'Quadra de tênis',
+    imageUrl: 'https://s2-ge.glbimg.com/PDV4QjcST79VbbXPPRtwaQC0AWM=/0x0:1280x720/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_bc8228b6673f488aa253bbcb03c80ec5/internal_photos/bs/2021/5/j/XdI1cNTZeuEfGCjpnbOQ/whatsapp-image-2021-04-22-at-19.22.46.jpeg',
+    schedule: '18:00-20:00',
+    day: 'Segunda-Feira',
+    emailOwner: 'thaynnara@gmail.com',
+    nameOwner: 'Thaynnara Rayane',
   },
   {
-    id: 2,
-    name: 'Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
+    id: 4,
+    name: 'Quadra de beach tênis',
+    description: 'Quadra de beach tênis',
+    imageUrl: 'https://static.wixstatic.com/media/b2bea2_3b82eaedea3c4fc2bb96e0120699e85e~mv2.jpeg/v1/fill/w_1000,h_750,al_c,q_85,usm_0.66_1.00_0.01/b2bea2_3b82eaedea3c4fc2bb96e0120699e85e~mv2.jpeg',
+    schedule: '18:00-20:00',
+    day: 'Terça-Feira',
+    emailOwner: 'leticia@gmail.com',
+    nameOwner: 'Leticia Xavier',
   },
   {
-    id: 1,
-    name: 'Meeting Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
-  },
-  {
-    id: 2,
-    name: 'Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
+    id: 5,
+    name: 'Quadra de areia 2',
+    description: 'Quadra de areia',
+    imageUrl: 'https://clubepaineiras.org.br/wp-content/uploads/2016/07/Esporte-volei-de-praia.jpg',
+    schedule: '20:00-22:00',
+    day: 'Segunda-Feira',
+    emailOwner: 'gustavo@gmail.com',
+    nameOwner: 'Gustavo Freitas',
   }*/];
 
   static get styles() {
@@ -131,14 +149,49 @@ export class AppReservas extends LitElement {
       });
     if (this.spaces.length == 0) {
       let spaceFake =
-      {
-        id: 0,
-        name: 'Nenhum espaço reservado',
-        description: 'Retorne a home e faça sua reserva',
-        imageUrl: '',
-      }
+        [
+          {
+            id: 2,
+            name: 'Quadra de areia',
+            description: 'Quadra de areia',
+            imageUrl: 'https://clubepaineiras.org.br/wp-content/uploads/2016/07/Esporte-volei-de-praia.jpg',
+            schedule: '20:00-22:00',
+            day: 'Segunda-Feira',
+            emailOwner: 'igor@gmail.com',
+            nameOwner: 'Igor Lucena',
+          },
+          {
+            id: 3,
+            name: 'Quadra de tênis',
+            description: 'Quadra de tênis',
+            imageUrl: 'https://s2-ge.glbimg.com/PDV4QjcST79VbbXPPRtwaQC0AWM=/0x0:1280x720/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_bc8228b6673f488aa253bbcb03c80ec5/internal_photos/bs/2021/5/j/XdI1cNTZeuEfGCjpnbOQ/whatsapp-image-2021-04-22-at-19.22.46.jpeg',
+            schedule: '18:00-20:00',
+            day: 'Segunda-Feira',
+            emailOwner: 'thaynnara@gmail.com',
+            nameOwner: 'Thaynnara Rayane',
+          },
+          {
+            id: 4,
+            name: 'Quadra de beach tênis',
+            description: 'Quadra de beach tênis',
+            imageUrl: 'https://static.wixstatic.com/media/b2bea2_3b82eaedea3c4fc2bb96e0120699e85e~mv2.jpeg/v1/fill/w_1000,h_750,al_c,q_85,usm_0.66_1.00_0.01/b2bea2_3b82eaedea3c4fc2bb96e0120699e85e~mv2.jpeg',
+            schedule: '18:00-20:00',
+            day: 'Terça-Feira',
+            emailOwner: 'leticia@gmail.com',
+            nameOwner: 'Leticia Xavier',
+          },
+          {
+            id: 5,
+            name: 'Quadra de areia 2',
+            description: 'Quadra de areia',
+            imageUrl: 'https://clubepaineiras.org.br/wp-content/uploads/2016/07/Esporte-volei-de-praia.jpg',
+            schedule: '20:00-22:00',
+            day: 'Segunda-Feira',
+            emailOwner: 'gustavo@gmail.com',
+            nameOwner: 'Gustavo Freitas',
+          }]
+      spaceFake.map((el) => this.spaces.push(el))
 
-      this.spaces.push(spaceFake)
     }
     this.requestUpdate();
   }
@@ -175,7 +228,7 @@ export class AppReservas extends LitElement {
               <div class="space-details">
                 <h2>${space.name}</h2>
                 <p>${space.description}</p>
-                <sl-button @click="${() => this._handleReserve(space.id)}" variant="primary">Alterar</sl-button>
+                <sl-button @click="${() => this._handleReserve(space.id)}" variant="primary">Visualizar reserva</sl-button>
                 <sl-button @click="${() => this._cancelaReserva(space.id)}" variant="danger">Cancelar</sl-button>
               </div>
             </div>
@@ -193,7 +246,7 @@ export class AppReservas extends LitElement {
   }
 
   private _handleReserve(spaceId: number) {
-    window.location.href = "espaco"
+    window.location.href = "espaco-info"
     console.log("Reservar o espaço: " + spaceId)
   }
 }

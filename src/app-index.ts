@@ -5,6 +5,7 @@ import './pages/app-login';
 import './pages/app-cadastro';
 import './pages/app-reset-senha';
 import './pages/app-espaco';
+import './pages/app-espaco-info';
 import './pages/app-reservas';
 import './pages/admin/app-users';
 import './components/header';

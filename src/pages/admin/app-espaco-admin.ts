@@ -10,6 +10,10 @@ interface Space {
   name: string;
   description: string;
   imageUrl: string;
+  schedule: string;
+  day: string;
+  emailOwner: string;
+  nameOwner: string;
   guestes: User[];
 }
 
@@ -34,9 +38,13 @@ export class AppEspaco extends LitElement {
   @property({ type: Array, state: true })
   space: Space = {
     id: 1,
-    name: 'Meeting Room',
-    description: 'A private room for meetings and presentations',
-    imageUrl: 'https://picsum.photos/id/1/300/200',
+    name: 'Quadra de areia',
+    description: 'Quadra de areia',
+    imageUrl: 'https://clubepaineiras.org.br/wp-content/uploads/2016/07/Esporte-volei-de-praia.jpg',
+    schedule: '18:00-20:00',
+    day: 'Segunda-Feira',
+    emailOwner: 'Mariana@gmail.com',
+    nameOwner: 'Mariana Lucena',
     guestes: [
       {
         email: 'biel@gmail.com',
@@ -111,14 +119,12 @@ export class AppEspaco extends LitElement {
         border: none;
         border-radius: 4px;
         cursor: pointer;
+
       }
       .addConvidado{
         margin-top: 20px;
       }
-      .delConvidado{
-        width: 50px;
-        right:0;
-      }
+
       .form {
         padding: 40px;
         background-color: #fff;
@@ -152,7 +158,9 @@ export class AppEspaco extends LitElement {
               <img class="space-image" src=${this.space.imageUrl} alt=${this.space.name} />
               <div class="space-details">
                 <h2>${this.space.name}</h2>
-                <p>${this.space.description}</p>
+                <p>${this.space.day} - ${this.space.schedule}<p>
+                <p>${this.space.nameOwner}<p>
+                <p>${this.space.emailOwner}<p>
                 ${this.space.guestes.map(
       guest => html`
                     <div class="space-card">
@@ -161,25 +169,13 @@ export class AppEspaco extends LitElement {
                         <h2>${guest.nome}</h2>
                         <p>${guest.email}</p>
                         </div>
-                        <sl-button class="delConvidado" @click=${() => this._excluirConvidado(guest.email)} variant="danger">Excluir</sl-button>
                       </div>
                     </div>
                   `
     )}
-    <h3>Adicione convidado</h3>
-    <form>
-    <sl-input type="text" id="username" name="name" placeholder="Nome"
-    @input=${this._handleNameInput}
-    >
-    </sl-input>
-    <sl-input type="email" name="email" placeholder="Email"
-    @input=${this._handleEmailInput}
-    >
-    </sl-input>
-                <sl-button class="addConvidado" @click=${() => this._incluirConvidado()} ?disabled=${!this._isFormValid()} variant="primary">Adicionar convidado</sl-button>
-
-                </form>
+    <sl-button  @click=${() => this._deleteScheduling()} variant="danger">Cancelar reserva</sl-button>
               </div>
+
             </div>
 
 
@@ -188,16 +184,12 @@ export class AppEspaco extends LitElement {
       </body>
 
       </main>
-      <app-menu></app-menu>
+      <app-menu-admin></app-menu-admin>
     ` ;
   }
 
-  private _excluirConvidado(email: string) {
-    this.space.guestes = this.space.guestes.filter(function (el: any) {
-      return el.email != email;
-    });
-    console.log("Convidado: " + email + " foi excluido!");
-    console.log(this.space.guestes);
+  private _deleteScheduling() {
+    window.location.href = "home-admin"
     this.requestUpdate();
 
   }
@@ -217,10 +209,6 @@ export class AppEspaco extends LitElement {
 
   }
 
-  /*private _handleReserve(spaceId: number) {
-    // Handle reservation for the space with the given ID
-    console.log("Reservar o espaço: " + spaceId)
-  }*/
 
   private _handleNameInput(event: Event) {
     const target = event.target as HTMLInputElement;

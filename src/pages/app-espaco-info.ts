@@ -3,9 +3,6 @@ import { property, customElement } from 'lit/decorators.js';
 
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
-import '@shoelace-style/shoelace/dist/components/option/option.js';
-import '@shoelace-style/shoelace/dist/components/select/select.js';
-import '@shoelace-style/shoelace/dist/components/select/select.js';
 
 import { styles } from '../styles/shared-styles';
 interface Space {
@@ -13,6 +10,8 @@ interface Space {
   name: string;
   description: string;
   imageUrl: string;
+  schedule: string;
+  day: string;
   emailOwner: string;
   nameOwner: string;
   guestes: User[];
@@ -23,7 +22,7 @@ interface User {
   nome: string;
 }
 
-@customElement('app-espaco')
+@customElement('app-espaco-info')
 export class AppEspaco extends LitElement {
 
   // For more information on using properties and state in lit
@@ -36,21 +35,22 @@ export class AppEspaco extends LitElement {
   @property({ type: String })
   email: string = '';
 
-  @property({ type: String })
-  day: string = '';
-
-  @property({ type: String })
-  schedule: string = '';
-
   @property({ type: Array, state: true })
   space: Space = {
     id: 1,
     name: 'Quadra de areia',
     description: 'Quadra de areia',
     imageUrl: 'https://clubepaineiras.org.br/wp-content/uploads/2016/07/Esporte-volei-de-praia.jpg',
-    emailOwner: 'igor@gmail.com',
-    nameOwner: 'Igor Lucena',
-    guestes: []
+    schedule: '18:00-20:00',
+    day: 'Segunda-Feira',
+    emailOwner: 'Mariana@gmail.com',
+    nameOwner: 'Mariana Lucena',
+    guestes: [
+      {
+        email: 'mari@gmail.com',
+        nome: 'Mariana Lucena'
+
+      }]
   };
 
   static get styles() {
@@ -105,14 +105,12 @@ export class AppEspaco extends LitElement {
         border: none;
         border-radius: 4px;
         cursor: pointer;
+
       }
       .addConvidado{
         margin-top: 20px;
       }
-      .delConvidado{
-        width: 50px;
-        right:0;
-      }
+
       .form {
         padding: 40px;
         background-color: #fff;
@@ -142,29 +140,13 @@ export class AppEspaco extends LitElement {
       <h1>Espaços para reservas</h1>
       </div>
       <div class="container">
-        <div class="space-card">
+            <div class="space-card">
               <img class="space-image" src=${this.space.imageUrl} alt=${this.space.name} />
               <div class="space-details">
                 <h2>${this.space.name}</h2>
-                <p>${this.space.description}</p>
-                <sl-select id="daySelect" placeholder="Selecione o dia" onSlChange=${this.onSlChangeDay} clearable>
-                  <sl-option value="Segunda-feira">Segunda-feira</sl-option>
-                  <sl-option value="Terça-feira">Terça-feira</sl-option>
-                  <sl-option value="Quarta-feira">Quarta-feira</sl-option>
-                  <sl-option value="Quinta-feira">Quinta-feira</sl-option>
-                  <sl-option value="Sexta-feira">Sexta-feira</sl-option>
-                  <sl-option value="Sábado">Sábado</sl-option>
-                  <sl-option value="Domingo">Domingo</sl-option>
-                </sl-select>
-                  <sl-select id="schedulesSelect" placeholder="Selecione o horário" onSlChange=${this.onSlChangeSchedule}  clearable>
-                  <sl-option value="06:00-08:00">06:00-08:00</sl-option>
-                  <sl-option value="08:00-10:00">08:00-10:00</sl-option>
-                  <sl-option value="10:00-12:00">10:00-12:00</sl-option>
-                  <sl-option value="14:00-16:00">14:00-16:00</sl-option>
-                  <sl-option value="16:00-18:00">16:00-18:00</sl-option>
-                  <sl-option value="18:00-20:00">18:00-20:00</sl-option>
-                  <sl-option value="20:00-22:00">20:00-22:00</sl-option>
-                </sl-select>
+                <p>${this.space.day} - ${this.space.schedule}<p>
+                <p>${this.space.nameOwner}<p>
+                <p>${this.space.emailOwner}<p>
                 ${this.space.guestes.map(
       guest => html`
                     <div class="space-card">
@@ -173,26 +155,13 @@ export class AppEspaco extends LitElement {
                         <h2>${guest.nome}</h2>
                         <p>${guest.email}</p>
                         </div>
-                        <sl-button class="delConvidado" @click=${() => this._excluirConvidado(guest.email)} variant="danger">Excluir</sl-button>
                       </div>
                     </div>
                   `
     )}
-    <h3>Adicione convidado</h3>
-    <form>
-    <sl-input type="text" id="username" name="name" placeholder="Nome"
-    @input=${this._handleNameInput}
-    >
-    </sl-input>
-    <sl-input type="email" name="email" placeholder="Email"
-    @input=${this._handleEmailInput}
-    >
-    </sl-input>
-                <sl-button class="addConvidado" type="reset" @click=${() => this._incluirConvidado()} ?disabled=${!this._isFormValid()} variant="primary">Adicionar convidado</sl-button>
-                <sl-button class="addConvidado" @click=${() => this._handleSchedule()} ?disabled=${this.space.guestes.length < 1} variant="success">Realizar reserva</sl-button>
-
-                </form>
+    <sl-button  @click=${() => this._deleteScheduling()} variant="danger">Cancelar reserva</sl-button>
               </div>
+
             </div>
 
 
@@ -205,12 +174,8 @@ export class AppEspaco extends LitElement {
     ` ;
   }
 
-  private _excluirConvidado(email: string) {
-    this.space.guestes = this.space.guestes.filter(function (el: any) {
-      return el.email != email;
-    });
-    console.log("Convidado: " + email + " foi excluido!");
-    console.log(this.space.guestes);
+  private _deleteScheduling() {
+    window.location.href = "home"
     this.requestUpdate();
 
   }
@@ -230,22 +195,7 @@ export class AppEspaco extends LitElement {
 
   }
 
-  private _handleSchedule() {
-    window.location.href = "home"
-    this.requestUpdate();
-  }
 
-  private onSlChangeDay(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.day = target.value;
-    console.log(this.day);
-  }
-
-  private onSlChangeSchedule(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.schedule = target.value;
-    console.log(this.schedule);
-  }
   private _handleNameInput(event: Event) {
     const target = event.target as HTMLInputElement;
     this.name = target.value;
@@ -255,8 +205,6 @@ export class AppEspaco extends LitElement {
     const target = event.target as HTMLInputElement;
     this.email = target.value;
   }
-
-
 
   private _isFormValid() {
     return this.name && this.email;
