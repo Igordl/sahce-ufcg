@@ -89,6 +89,9 @@ export class AppMenu extends LitElement {
         <sl-button  href="${(import.meta as any).env.BASE_URL}home" @click=${this._changeMenu()} ?disabled=${!this.home}>
             Home
         </sl-button>
+        <sl-button  href="${(import.meta as any).env.BASE_URL}user-perfil" @click=${this._changeMenu()}>
+            Perfil
+        </sl-button>
         <sl-button  href="${(import.meta as any).env.BASE_URL}login" @click=${this._changeMenu()}>
             Sair
         </sl-button>

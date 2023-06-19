@@ -7,6 +7,7 @@ import './pages/app-reset-senha';
 import './pages/app-espaco';
 import './pages/app-espaco-info';
 import './pages/app-reservas';
+import './pages/app-perfil';
 import './pages/admin/app-users';
 import './components/header';
 import './components/menu';

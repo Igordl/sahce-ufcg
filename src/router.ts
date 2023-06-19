@@ -18,6 +18,7 @@ import './pages/app-reset-senha.js';
 import './pages/app-espaco.js';
 import './pages/app-espaco-info.js';
 import './pages/app-reservas.js';
+import './pages/app-perfil.js';
 
 import './pages/admin/app-home-admin.js';
 import './pages/admin/app-espaco-admin.js';
@@ -50,6 +51,11 @@ export const router = new Router({
       path: '/users-admin',
       title: 'Users',
       render: () => html`<app-users></app-users>`
+    },
+    {
+      path: '/user-perfil',
+      title: 'Perfil',
+      render: () => html`<app-perfil></app-perfil>`
     },
     {
       path: '/espaco',

@@ -9,7 +9,7 @@ import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 
 import axios from 'axios';
 
-import { styles } from '../../styles/shared-styles';
+import { styles } from '../styles/shared-styles';
 interface User {
   email: string;
   name: string;
@@ -17,7 +17,7 @@ interface User {
   actived: boolean;
 }
 
-@customElement('app-users')
+@customElement('app-perfil')
 export class AppUsers extends LitElement {
 
   // For more information on using properties and state in lit
@@ -26,30 +26,13 @@ export class AppUsers extends LitElement {
   @property({ type: String })
   search: string = '';
   @property({ type: Array })
-  users: User[] = [{
-    email: 'Biel@gmail.com',
-    name: 'Gabriel Almeida',
-    docFile: '',
-    actived: true
-
-  }, {
-    email: 'guga@gmail.com',
-    name: 'Gustavo Freitas',
-    docFile: 'google.com',
-    actived: true
-  },
-  {
-    email: 'mari@gmail.com',
-    name: 'Mariana Lucena',
-    docFile: 'google.com',
-    actived: false
-  },
-  {
-    email: 'igor@gmail.com',
-    name: 'Igor Lucena',
-    docFile: 'google.com',
-    actived: false
-  }];
+  user: User =
+    {
+      email: 'igor@gmail.com',
+      name: 'Igor Lucena',
+      docFile: 'https://img.freepik.com/vetores-premium/icone-de-documento-na-pasta_149152-438.jpg?w=2000',
+      actived: false
+    };
 
   static get styles() {
     return [
@@ -129,7 +112,7 @@ export class AppUsers extends LitElement {
     console.log('This is your home page');
     axios.post(`http://localhost:8080/v1/protected/places`)
       .then(async (response) => {
-        this.users.push(response.data)
+        this.user = response.data
       });
   }
 
@@ -145,34 +128,28 @@ export class AppUsers extends LitElement {
 
       <body>
       <div class="titulo">
-      <h1>Usuários</h1>
+      <h1>Perfil</h1>
       </div>
-      <form class="pesquisa">
-        <div class="input">
-        <sl-input placeholder="Pesquisa" @input=${this._handleSearchInput}></sl-input>
-        <sl-button class="button" @click=${() => this._searchUser()} variant="primary">Buscar</sl-button>
-        </div>
-
-      </form>
       <div class="container">
-
-
-        ${this.users.map(
-      user => html`
-
             <div class="space-card">
-
               <div class="space-details">
-                <h2>${user.name}</h2>
-                <p>${user.email}</p>
+                <img class="space-image" src=${this.user.docFile} alt="DocFile" />
+                <h2>${this.user.name}</h2>
+                <p>${this.user.email}</p>
+                <p>${this._handleVerifyActiveInactive(this.user.actived)}</p>
+                <sl-input
+                type="file"
+                id="docFile"
+                name="arquivo"
+                @input=${this._handleDocFileInput}
+                closable
+                ></sl-input>
                 <sl-button-group label="Example Button Group">
-                <sl-button href="${user.docFile}" download="${user.email}.jpg" >Documento</sl-button>
-                <sl-button @click=${() => this._handleActiveInactive(user.email)}  >${this._handleVerifyActiveInactive(user.actived)}</sl-button>
+                <sl-button href="${this.user.docFile}" download="${this.user.docFile}" >Atualizar</sl-button>
                 </sl-button-group>
                 </div>
             </div>
-          `
-    )}
+
 
       </div>
 
@@ -182,40 +159,24 @@ export class AppUsers extends LitElement {
       <app-menu-admin></app-menu-admin>
     ` ;
   }
-  private _searchUser() {
-    this.users = this.users.filter((user) => user.name.toLowerCase().includes(this.search.toLowerCase()))
-  }
 
-  private _handleActiveInactive(email: string) {
-    this.users.map(function (el: any) {
-      if (el.email == email) {
-        return el.actived = !el.actived;
-      }
-      return;
-    });
-    this.requestUpdate();
-  }
 
   private _handleVerifyActiveInactive(active: boolean) {
     if (active) {
-      return 'Bloquear';
+      return 'Bloqueado';
     }
-    return 'Ativar';
+    return 'Ativo';
   }
 
 
 
 
 
-
-  private _handleUpdateAccount(email: string) {
-    this.users.map(function (el: any) {
-      if (el.email == email) {
-        return el.actived = false;
-      }
-      return;
-    });
+  private _handleDocFileInput(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.user.docFile = target.value;
     this.requestUpdate();
 
   }
+
 }
