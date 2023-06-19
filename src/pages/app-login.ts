@@ -181,8 +181,9 @@ export class AppLogin extends LitElement {
             window.location.href = "/home-admin";
         } else {
             window.location.href = "/home";
+            this.alertElement?.setAttribute("open", "open");
         }
-        this.alertElement?.setAttribute("open", "open");
+
         /*
         this.axios.post(`http://localhost:8080/user/login`, user)
             .then((res) => {

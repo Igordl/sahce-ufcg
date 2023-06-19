@@ -29,8 +29,8 @@
   },
   "include": [
     "src/**/*.ts",
-    "router.d.ts",
-    "src/pages/app-espaco.js"
+    "src/**/**/*.ts",
+    "router.d.ts"
   ],
   "exclude": [
     "node_modules"
