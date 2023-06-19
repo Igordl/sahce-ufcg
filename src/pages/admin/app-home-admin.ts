@@ -25,9 +25,6 @@ interface Schedule {
   day: string;
   times: string[];
 }
-interface Time {
-  hour: string;
-}
 
 
 

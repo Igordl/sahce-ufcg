@@ -208,14 +208,5 @@ export class AppUsers extends LitElement {
 
 
 
-  private _handleUpdateAccount(email: string) {
-    this.users.map(function (el: any) {
-      if (el.email == email) {
-        return el.actived = false;
-      }
-      return;
-    });
-    this.requestUpdate();
 
-  }
 }

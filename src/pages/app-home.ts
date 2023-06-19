@@ -22,9 +22,7 @@ interface Schedule {
   day: string;
   times: string[];
 }
-interface Time {
-  hour: string;
-}
+
 
 @customElement('app-home')
 export class AppHome extends LitElement {

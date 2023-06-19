@@ -116,10 +116,7 @@ export class AppUsers extends LitElement {
       });
   }
 
-  private _handleSearchInput(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.search = target.value;
-  }
+
 
 
   render() {

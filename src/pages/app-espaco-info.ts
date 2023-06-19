@@ -181,32 +181,5 @@ export class AppEspaco extends LitElement {
   }
 
 
-  private _incluirConvidado() {
-    let user = {
-      "email": this.email,
-      "nome": this.name
-    }
-    this.space.guestes.push(user);
-    console.log("Convidado: " + user.email + " foi incluido!");
-    console.log(this.space.guestes);
-    this.email = "";
-    this.name = "";
-    this.requestUpdate();
 
-  }
-
-
-  private _handleNameInput(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.name = target.value;
-  }
-
-  private _handleEmailInput(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.email = target.value;
-  }
-
-  private _isFormValid() {
-    return this.name && this.email;
-  }
 }
