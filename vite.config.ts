@@ -3,7 +3,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "/",
+  base: "/login",
   build: {
     sourcemap: true,
     assetsDir: "code",
