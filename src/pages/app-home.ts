@@ -147,7 +147,7 @@ export class AppHome extends LitElement {
     // this method is a lifecycle even in lit
     // for more info check out the lit docs https://lit.dev/docs/components/lifecycle/
     console.log('This is your home page');
-    axios.post(`http://localhost:8080/v1/protected/places`)
+    axios.post(`/places/user/{userId}`)
       .then(async (response) => {
         this.places.push(response.data)
       });

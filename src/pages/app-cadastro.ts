@@ -264,17 +264,13 @@ export class AppCadastro extends LitElement {
             email: this.email,
             phone: this.phone,
             address: this.address,
+            docFile: this.docFile,
             userType: this.userType.value as String
         };
         console.log(cadastro);
-        this.axios.post(`/anonymous/users`, cadastro).then(() => {
+        this.axios.post(`/user`, cadastro).then(() => {
             console.log("Cadastro solicitado");
-            //window.location.href = "/login";
-        }).catch(() => {
-            this.alertElement?.setAttribute("open", "open");
-        });
-        this.axios.post(`/anonymous/users/documentPicture`, this.docFile).then(() => {
-            console.log("Cadastro solicitado");
+            window.location.href = "/login";
         }).catch(() => {
             this.alertElement?.setAttribute("open", "open");
         });

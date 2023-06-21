@@ -47,8 +47,8 @@ export class AppEspaco extends LitElement {
     nameOwner: 'Mariana Lucena',
     guestes: [
       {
-        email: 'biel@gmail.com',
-        nome: 'Bobleu'
+        email: 'gabriel@gmail.com',
+        nome: 'Gabriel Almeida'
 
       }, {
         email: 'guga@gmail.com',

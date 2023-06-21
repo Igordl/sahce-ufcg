@@ -32,7 +32,7 @@ export class AppResetSenha extends LitElement {
     @query('.alertSuccess') private alertElementSuccess?: HTMLElement;
 
     axios = axios.create({
-        baseURL: 'http://localhost:8080/v1',
+        baseURL: 'http://localhost:8080',
         timeout: 1000,
         headers: { 'X-Custom-Header': 'foobar' }
     });
@@ -140,28 +140,22 @@ export class AppResetSenha extends LitElement {
 
     private _requestResetPassword() {
         console.log("Enviando email!")
-        let user = {
-            "email": this.username
-        }
-        this.axios.post(`/anonymous/requestResetPassword`, user)
-            .then(async () => {
-                console.log("Response deu certo")
+
+        this.axios.post(`/user/request-reset/` + this.username)
+            .then(() => {
                 this.alertElementSuccess?.setAttribute("open", "open");
-            }).catch(async (error) => {
-                console.log(error);
+            }).catch(() => {
                 this.alertElementErro?.setAttribute("open", "open");
             });
     }
 
     private _resetPassword() {
-        console.log("Enviando email!")
         let user = {
             "email": this.username,
             "password": this.password
         }
-        this.axios.post(`/anonymous/reset-password`, user)
+        this.axios.post(`/user/reset-password`, user)
             .then(() => {
-                console.log("Response deu certo")
                 this.alertElementSuccess?.setAttribute("open", "open");
             }).catch(() => {
                 this.alertElementErro?.setAttribute("open", "open");

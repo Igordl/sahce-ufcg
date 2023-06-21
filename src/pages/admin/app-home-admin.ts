@@ -114,6 +114,12 @@ export class AppHome extends LitElement {
   @property({ type: Number })
   placeId!: number;
 
+  axios = axios.create({
+    baseURL: 'http://localhost:8080',
+    timeout: 1000,
+    headers: { 'X-Custom-Header': 'foobar' }
+  });
+
   static get styles() {
     return [
       styles,
@@ -206,7 +212,7 @@ export class AppHome extends LitElement {
     // this method is a lifecycle even in lit
     // for more info check out the lit docs https://lit.dev/docs/components/lifecycle/
     console.log('This is your home page');
-    axios.get("http://localhost:8080/places/" + "INTERNAL_USER")
+    axios.get("/admin/place")
       .then(async (response) => {
         this.places.push(response.data)
       });
@@ -404,7 +410,6 @@ export class AppHome extends LitElement {
   private _handleAddPlaceModal() {
 
     let place = {
-      id: 0,
       name: this.name,
       description: this.description,
       imageUrl: this.imageUrl,
@@ -412,13 +417,10 @@ export class AppHome extends LitElement {
       schedules: this.schedules,
       rateScheduling: this.ratingScheduling.value as string
     };
-    console.log(place);
-    this.places.push(place);
 
 
-    axios.post(`http://localhost:8080/place`, place)
+    axios.post(`/place`, place)
       .then((res) => {
-        console.log("Deu certo")
         console.log(res.data)
         this.requestUpdate();
       }).catch(() => {

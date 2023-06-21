@@ -14,7 +14,7 @@ interface User {
   email: string;
   name: string;
   docFile: string;
-  actived: boolean;
+  flAtivo: boolean;
 }
 
 @customElement('app-perfil')
@@ -25,13 +25,13 @@ export class AppUsers extends LitElement {
   @property() message = 'Welcome!';
   @property({ type: String })
   search: string = '';
-  @property({ type: Array })
+
   user: User =
     {
       email: 'igor@gmail.com',
       name: 'Igor Lucena',
       docFile: 'https://img.freepik.com/vetores-premium/icone-de-documento-na-pasta_149152-438.jpg?w=2000',
-      actived: false
+      flAtivo: false
     };
 
   static get styles() {
@@ -105,15 +105,21 @@ export class AppUsers extends LitElement {
   constructor() {
     super();
   }
+  axios = axios.create({
+    baseURL: 'http://localhost:8080',
+    timeout: 1000,
+    headers: { 'X-Custom-Header': 'foobar' }
+  });
 
   async firstUpdated() {
     // this method is a lifecycle even in lit
     // for more info check out the lit docs https://lit.dev/docs/components/lifecycle/
     console.log('This is your home page');
-    axios.post(`http://localhost:8080/v1/protected/places`)
+    axios.post(`/user/` + 'guustavofrt%40gmail.com')
       .then(async (response) => {
         this.user = response.data
       });
+    this.requestUpdate();
   }
 
 
@@ -133,7 +139,7 @@ export class AppUsers extends LitElement {
                 <img class="space-image" src=${this.user.docFile} alt="DocFile" />
                 <h2>${this.user.name}</h2>
                 <p>${this.user.email}</p>
-                <p>${this._handleVerifyActiveInactive(this.user.actived)}</p>
+                <p>${this._handleVerifyActiveInactive(this.user.flAtivo)}</p>
                 <sl-input
                 type="file"
                 id="docFile"
@@ -153,7 +159,7 @@ export class AppUsers extends LitElement {
       </body>
 
       </main>
-      <app-menu-admin></app-menu-admin>
+      <app-menu></app-menu>
     ` ;
   }
 

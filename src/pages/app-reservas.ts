@@ -28,7 +28,7 @@ export class AppReservas extends LitElement {
   @property({ type: String })
   email: string = '';
   @property({ type: Array })
-  spaces: Space[] = [/*{
+  spaces: Space[] = [{
     id: 1,
     name: 'Quadra de areia',
     description: 'Quadra de areia',
@@ -77,7 +77,7 @@ export class AppReservas extends LitElement {
     day: 'Segunda-Feira',
     emailOwner: 'gustavo@gmail.com',
     nameOwner: 'Gustavo Freitas',
-  }*/];
+  }];
 
   static get styles() {
     return [
